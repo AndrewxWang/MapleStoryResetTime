@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>MapleStory Time Converter</h2>
+<h3>+/- Reset Time to Local Time</h3>
+
+<input type="text" id="myTime" placeholder="Enter time (ex: -6)">
+
+<button onclick="convertToReset()">Convert</button>
+
+<p id="demo2"></p>
+<p id="demo"></p>
+
+<script>
+    const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+    const d = new Date(); // Current Date
+    const resetTime = "20:00:00"; // EST Reset
+    const currDate = new Date(month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() + " " + resetTime);
+
+    document.getElementById("demo").innerHTML = "Reset Time: " + convertServerDateToLocal(currDate);
+
+    function convertToReset() {
+        const d = new Date(); // Current Date
+        const resetTime = "20:00:00"; // EST Reset
+        const currDate = new Date(month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() + " " + resetTime);
+
+        const convertTime = parseFloat(document.getElementById("myTime").value);
+        currDate.setHours(currDate.getHours() + convertTime);
+
+        if (!Number.isInteger(convertTime) && !isNaN(convertTime)){
+              const decimalPart = parseFloat(0 + "." + (String(convertTime).split(".")[1]));
+                // document.getElementById("demo2").innerHTML = decimalPart;
+              currDate.setMinutes(decimalPart * 60);
+        }
+
+        if (convertTime > 0) {
+            document.getElementById("demo").innerHTML = "Converted Time (+" + convertTime + "): " + convertServerDateToLocal(currDate);
+        } else {
+            document.getElementById("demo").innerHTML = "Converted Time (" + convertTime + "): " + convertServerDateToLocal(currDate);
+        }
+
+
+    }
+
+    function convertServerDateToLocal(dateInput) {
+        // credit: (https://gist.github.com/mihaipaun/9191226)
+
+        // EST - UTC offset: 5 hours
+        var offset = 4.0,
+
+            /*
+              - calculate the difference between the server date and UTC
+              - the value returned by the getTime method is the number of milliseconds since 1 January 1970 00:00:00 UTC.
+              - the time-zone offset is the difference, in minutes, between UTC and local time
+              - 60000 milliseconds = 60 seconds = 1 minute
+            */
+            serverDate = new Date(dateInput),
+            utc = serverDate.getTime() - (serverDate.getTimezoneOffset() * 60000),
+
+            /*
+              - apply the offset between UTC and EST (5 hours)
+              - 3600000 milliseconds = 3600 seconds = 60 minutes = 1 hour
+            */
+            clientDate = new Date(utc + (3600000 * offset));
+
+        return clientDate.toLocaleTimeString();
+    }
+</script>
+
+</body>
+</html>
