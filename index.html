@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <body>
@@ -32,7 +33,11 @@
         if (!Number.isInteger(convertTime) && !isNaN(convertTime)){
               const decimalPart = parseFloat(0 + "." + (String(convertTime).split(".")[1]));
                 // document.getElementById("demo2").innerHTML = decimalPart;
-              currDate.setMinutes(decimalPart * 60);
+              if (convertTime > 0) {
+              	currDate.setMinutes(decimalPart * 60);
+              } else {
+              	currDate.setMinutes(60 - decimalPart * 60);
+              }
         }
 
         if (convertTime > 0) {
