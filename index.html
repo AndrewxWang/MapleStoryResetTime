@@ -1,16 +1,17 @@
 
 <!DOCTYPE html>
 <html>
+<style>
+	body {
+    		
+    }
+</style>
 <body>
 
 <h2>MapleStory Time Converter</h2>
 <h3>+/- Reset Time to Local Time</h3>
 
-<input type="text" id="myTime" placeholder="Enter time (ex: -6)">
-
-<button onclick="convertToReset()">Convert</button>
-
-<p id="demo2"></p>
+<input type="text" id="myTime" placeholder="Enter time (ex: -6)" oninput="convertToReset()" autocomplete="off">
 <p id="demo"></p>
 
 <script>
@@ -32,7 +33,6 @@
 
         if (!Number.isInteger(convertTime) && !isNaN(convertTime)){
               const decimalPart = parseFloat(0 + "." + (String(convertTime).split(".")[1]));
-                // document.getElementById("demo2").innerHTML = decimalPart;
               if (convertTime > 0) {
               	currDate.setMinutes(decimalPart * 60);
               } else {
@@ -42,6 +42,10 @@
 
         if (convertTime > 0) {
             document.getElementById("demo").innerHTML = "Converted Time (+" + convertTime + "): " + convertServerDateToLocal(currDate);
+        } else if (document.getElementById("myTime").value === "") {
+        	const resetTime = "20:00:00"; // EST Reset
+       		const currDate = new Date(month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() + " " + resetTime);
+        	document.getElementById("demo").innerHTML = "Reset Time: " + convertServerDateToLocal(currDate);
         } else {
             document.getElementById("demo").innerHTML = "Converted Time (" + convertTime + "): " + convertServerDateToLocal(currDate);
         }
@@ -61,7 +65,7 @@
               - the time-zone offset is the difference, in minutes, between UTC and local time
               - 60000 milliseconds = 60 seconds = 1 minute
             */
-            serverDate = new Date(dateInput),
+            serverDate = new Date(dateInput),	
             utc = serverDate.getTime() - (serverDate.getTimezoneOffset() * 60000),
 
             /*
@@ -72,6 +76,22 @@
 
         return clientDate.toLocaleTimeString();
     }
+    
+        function convertLocalDateToServer(dateInput){
+		// credit: (https://stackoverflow.com/questions/9070604/how-to-convert-datetime-from-the-users-timezone-to-est-in-javascript)
+        
+        //EST
+        offset = -4.0
+
+        clientDate = new Date(dateInput);
+        utc = clientDate.getTime() + (clientDate.getTimezoneOffset() * 60000);
+
+        serverDate = new Date(utc + (3600000 * offset));
+
+        return serverDate.toLocaleTimeString();
+    }
+    
+    
 </script>
 
 </body>
